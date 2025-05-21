@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/@generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                                          String                                      @id @default(uuid()) @db.Uuid
+  email                                       String                                      @unique
+  name                                        String  
+  password                                    String?
+  createdAt                                   DateTime                                    @default(now())
+  updatedAt                                   DateTime                                    @updatedAt
+  
+  profiles                                    Profile[] // Up to "n" profiles
+  subscriptions                               Subscription[]
+}
+
+model Profile {
+  id                                          String                                      @id @default(uuid()) @db.Uuid
+  email                                       String                                      @unique
+  profileName                                 String
+  avatarUrl                                   String?
+  createdAt                                   DateTime                                    @default(now())
+  updatedAt                                   DateTime                                    @updatedAt
+  userId                                      String                                      @db.Uuid
+
+  user                                        User                                        @relation(fields: [userId], references: [id])
+  watched                                     Watched[]
+  favoriteMovies                              FavoriteMovie[]
+  continueWatching                            ContinueWatching[]
+  ratings                                     Rating[]
+  // history
+}
+
+model Watched {
+  id                                          String                                      @id @default(uuid()) @db.Uuid
+  profileId                                   String                                      @db.Uuid
+  movieId                                     String                                      @db.Uuid
+  watchedAt                                   DateTime                                    @default(now())
+
+  profile                                     Profile                                     @relation(fields: [profileId], references: [id])
+  movie                                       Movie                                       @relation(fields: [movieId], references: [id])
+
+  @@unique([profileId, movieId]) 
+}
+
+model Movie {
+  id                                          String                                      @id @default(uuid()) @db.Uuid
+  title                                       String
+  description                                 String
+  duration                                    Int // min
+  videoUrl                                    String
+  thumbnail                                   String
+  genre                                       String
+  createdAt                                   DateTime                                    @default(now())
+
+  watched                                     Watched[]
+  continueWatching                            ContinueWatching[]
+  favoriteMovie                               FavoriteMovie[]
+  rating                                      Rating[]
+}
+
+model FavoriteMovie {
+  id                                          String                                      @id @default(uuid()) @db.Uuid
+  profileId                                   String                                      @db.Uuid
+  movieId                                     String                                      @db.Uuid
+  addedAt                                     DateTime                                    @default(now())
+
+  profile                                     Profile                                     @relation(fields: [profileId], references: [id])
+  movie                                       Movie                                       @relation(fields: [movieId], references: [id])
+
+  @@unique([profileId, movieId]) 
+}
+
+model ContinueWatching {
+  id                                          String                                      @id @default(uuid()) @db.Uuid
+  profileId                                   String                                      @db.Uuid
+  movieId                                     String                                      @db.Uuid
+  progress                                    Int // min
+  updatedAt                                   DateTime                                    @updatedAt
+
+  profile                                     Profile                                     @relation(fields: [profileId], references: [id])
+  movie                                       Movie                                       @relation(fields: [movieId], references: [id])
+
+  @@unique([profileId, movieId]) 
+}
+
+model Rating {
+  id                                          String                                      @id @default(uuid()) @db.Uuid
+  profileId                                   String                                      @db.Uuid
+  movieId                                     String                                      @db.Uuid
+  score                                       Int // Up to 3
+  ratedAt                                     DateTime                                    @default(now())
+
+  profile                                     Profile                                     @relation(fields: [profileId], references: [id])
+  movie                                       Movie                                       @relation(fields: [movieId], references: [id])
+
+  @@unique([profileId, movieId]) 
+}
+
+model Plan {
+  id                                          String                                      @id @default(uuid()) @db.Uuid
+  name                                        String // monthly, yearly
+  price                                       Int // cents
+  duration                                    Int // days
+  createdAt                                   DateTime                                    @default(now())
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                                          String                                      @id @default(uuid()) @db.Uuid
+  userId                                      String                                      @db.Uuid
+  planId                                      String                                      @db.Uuid
+  startedAt                                   DateTime                                    @default(now())
+  expiresAt                                   DateTime
+
+  status                                      SubscriptionStatus                          @default(ACTIVE)
+  user                                        User                                        @relation(fields: [userId], references: [id])
+  plan                                        Plan                                        @relation(fields: [planId], references: [id])
+  payments                                    Payment[]
+}
+
+model Payment {
+  id                                          String                                      @id @default(uuid()) @db.Uuid
+  subscriptionId                              String                                      @db.Uuid
+  amount                                      Int // cents
+  paidAt                                      DateTime
+
+  status                                      PaymentStatus
+  subscription                                Subscription                                @relation(fields: [subscriptionId], references: [id])
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+}
