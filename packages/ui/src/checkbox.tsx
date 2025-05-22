@@ -19,7 +19,7 @@ export const Checkbox = ({
     <div className="w-fit relative">
       <label
         htmlFor={id}
-        className="flex items-center select-none rounded my-4 transition-all"
+        className="flex items-center select-none rounded my-3 transition-all"
       >
         <input
           className="absolute opacity-0 peer"
@@ -28,7 +28,7 @@ export const Checkbox = ({
           checked={checked}
           onChange={(e) => setChecked(e.target.checked)}
         />
-        <span className="relative w-[18px] h-[18px] rounded-[4px] border border-gray-300 shadow-sm transition-all animate-none peer-focus-within:outline-2 peer-focus-within:outline-offset-1">
+        <span className="cursor-pointer relative w-[18px] h-[18px] rounded-[4px] border border-gray-300 shadow-sm transition-all animate-none peer-focus-within:outline-2 peer-focus-within:outline-offset-1">
           <svg
             width="12"
             height="10"

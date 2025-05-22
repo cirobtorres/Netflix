@@ -5,7 +5,7 @@ export const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: "",
+        default: "bg-transparent",
       },
     },
     defaultVariants: {
@@ -23,7 +23,7 @@ export const labelVariants = cva(
   {
     variants: {
       variant: {
-        default: "",
+        default: "bg-transparent",
       },
     },
     defaultVariants: {
