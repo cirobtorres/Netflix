@@ -16,10 +16,10 @@ export const Checkbox = ({
   const [checked, setChecked] = useState(isChecked);
 
   return (
-    <div className="w-fit relative">
+    <div className="w-fit relative my-5">
       <label
         htmlFor={id}
-        className="flex items-center select-none rounded my-3 transition-all"
+        className="flex items-center select-none rounded transition-all"
       >
         <input
           className="absolute opacity-0 peer"

@@ -15,10 +15,10 @@ export const inputVariants = cva(
 );
 
 export const labelVariants = cva(
-  `absolute select-none pointer-events-none font-medium text-neutral-400` +
-    ` top-4.5 left-4 -translate-y-3 -translate-x-[5px] transform transition-top duration-100` +
+  `absolute origin-left select-none pointer-events-none font-medium text-neutral-400` +
+    ` top-4.5 left-5 -translate-y-3 -translate-x-[5px] transform transition-top duration-100` +
     ` peer-focus:-translate-y-3 peer-focus:-translate-x-[5px]` +
-    ` peer-placeholder-shown:translate-y-0 peer-placeholder-shown:translate-x-0 peer-placeholder-shown:scale-100` +
+    ` peer-placeholder-shown:left-5 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:translate-x-0 peer-placeholder-shown:scale-100` +
     ` scale-75 peer-focus:scale-75`,
   {
     variants: {

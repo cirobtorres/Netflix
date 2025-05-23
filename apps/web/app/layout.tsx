@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geist.className} text-foreground bg-gradient-to-br from-background to-neutral-800 min-h-screen max-w-dvw overflow-x-hidden`}
+        className={`${geist.className} text-foreground bg-gradient-to-b from-neutral-900 via-background to-neutral-950 min-h-screen max-w-dvw overflow-x-hidden`}
       >
         {children}
       </body>
