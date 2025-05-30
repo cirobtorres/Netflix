@@ -9,25 +9,31 @@ import {
   labelVariants,
   LabelVariantsProps,
 } from "./inputVariants";
-import { forwardRef, useRef, useState } from "react";
-
-type AllowedInputTypes = Extract<
-  React.HTMLInputTypeAttribute,
-  "email" | "text" | "password"
->;
+import * as React from "react";
+import { InputMask } from "@react-input/mask";
 
 interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
-    InputVariantsProps {}
+    InputVariantsProps {
+  uppercase?: boolean;
+}
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, variant, ...props }, ref) => (
-    <input
-      ref={ref}
-      className={cn(inputVariants({ variant }), className)}
-      {...props}
-    />
-  )
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ uppercase, className, variant, ...props }, ref) => {
+    const [text, setText] = React.useState("");
+    return (
+      <input
+        ref={ref}
+        value={text}
+        placeholder=""
+        onChange={(e) =>
+          setText(uppercase ? e.target.value.toUpperCase() : e.target.value)
+        }
+        className={cn(inputVariants({ variant }), className)}
+        {...props}
+      />
+    );
+  }
 );
 Input.displayName = "Input";
 
@@ -37,7 +43,7 @@ interface LabelComponentProps
   label: string;
 }
 
-const Label = ({
+export const Label = ({
   label,
   className,
   variant,
@@ -48,24 +54,24 @@ const Label = ({
   </label>
 );
 
-interface FieldsetComponentProps
+interface PasswordFieldsetComponentProps
   extends React.HTMLAttributes<HTMLDivElement>,
     FieldsetVariantsProps {
   label: string;
-  type?: AllowedInputTypes;
+  maxLength?: number;
 }
 
-export const Fieldset = ({
+export const PasswordFieldset = ({
   label,
-  type,
+  maxLength,
   className,
   variant,
   ...props
-}: FieldsetComponentProps) => {
-  const [dynType, setDynType] = useState(type ?? "text");
-  const [passHover, setPassHover] = useState(false);
-  const [released, setReleased] = useState(true);
-  const inputRef = useRef<HTMLInputElement>(null);
+}: PasswordFieldsetComponentProps) => {
+  const [dynType, setDynType] = React.useState("password");
+  const [passHover, setPassHover] = React.useState(false);
+  const [released, setReleased] = React.useState(true);
+  const inputRef = React.useRef<HTMLInputElement>(null);
   return (
     <div
       className={cn(fieldsetVariants({ variant }), className)}
@@ -83,12 +89,12 @@ export const Fieldset = ({
     >
       <Input
         ref={inputRef}
-        placeholder=""
         type={dynType}
+        maxLength={maxLength}
         autoComplete="email"
-        className={type === "password" ? "pl-4 pr-14" : undefined}
+        className="pl-4 pr-14"
       />
-      {type === "password" && passHover && (
+      {passHover && (
         <button
           type="button"
           // Mouse interactions
@@ -159,3 +165,86 @@ export const Fieldset = ({
     </div>
   );
 };
+
+interface FieldsetComponentProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    FieldsetVariantsProps {
+  children: React.ReactNode;
+}
+
+// ------------------------------------------------------------------------------------------
+export const Fieldset = ({
+  children,
+  className,
+  variant,
+  ...props
+}: FieldsetComponentProps) => {
+  return (
+    <div className={cn(fieldsetVariants({ variant }), className)} {...props}>
+      {children}
+    </div>
+  );
+};
+
+// ------------------------------------------------------------------------------------------
+export const CreditCardInput = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, variant, ...props }, ref) => {
+    return (
+      // http://npmjs.com/package/@react-input/mask
+      <InputMask
+        ref={ref}
+        type="text"
+        autoComplete="on"
+        placeholder=""
+        mask="____ ____ ____ ____"
+        replacement={{ _: /\d/ }}
+        className={cn(inputVariants({ variant }), className)}
+        {...props}
+      />
+    );
+  }
+);
+CreditCardInput.displayName = "CreditCardInput";
+
+// ------------------------------------------------------------------------------------------
+export const ExpirationDateInput = React.forwardRef<
+  HTMLInputElement,
+  InputProps
+>(({ className, variant, ...props }, ref) => {
+  return (
+    // http://npmjs.com/package/@react-input/mask
+    <InputMask
+      ref={ref}
+      type="text"
+      autoComplete="off"
+      placeholder=""
+      mask="__/__"
+      replacement={{ _: /\d/ }}
+      className={cn(inputVariants({ variant }), className)}
+      {...props}
+    />
+  );
+});
+ExpirationDateInput.displayName = "ExpirationDateInput";
+
+// ------------------------------------------------------------------------------------------
+export const SecurityCodeInput = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ value, onChange, className, variant, ...props }, ref) => {
+    return (
+      // http://npmjs.com/package/@react-input/mask
+      <InputMask
+        ref={ref}
+        type="text"
+        autoComplete="off"
+        placeholder=""
+        mask="___"
+        replacement={{ _: /\d/ }}
+        value={value}
+        onChange={onChange}
+        className={cn(inputVariants({ variant }), className)}
+        {...props}
+      />
+    );
+  }
+);
+SecurityCodeInput.displayName = "SecurityCodeInput";

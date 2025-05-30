@@ -25,11 +25,11 @@ export const LoginHeader = () => (
 
 export const SignupHeader = () => (
   <header className="w-full border-b border-neutral-800 z-10 bg-background">
-    <div className="w-full mx-auto flex justify-between items-center py-4 px-12">
+    <div className="w-full mx-auto flex justify-between items-center py-4 max-[1024px]:px-4 min-[1024px]:px-12">
       <NetflixLogo />
       <Link
         href="/login"
-        className="text-2xl uppsercase hover:underline rounded transition-colors duration-200 outline-2 outline-transparent focus-visible:outline-white focus-visible:outline-offset-2"
+        className="text-lg md:text-xl lg:text-2xl uppsercase hover:underline rounded transition-colors duration-200 outline-2 outline-transparent focus-visible:outline-white focus-visible:outline-offset-2"
       >
         Entrar
       </Link>

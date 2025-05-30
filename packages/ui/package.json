@@ -35,6 +35,8 @@
     "typescript": "5.8.2"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.2.5",
+    "@react-input/mask": "^2.0.4",
     "class-variance-authority": "^0.7.1"
   }
 }

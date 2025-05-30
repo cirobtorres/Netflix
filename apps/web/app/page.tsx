@@ -1,6 +1,5 @@
-import { Fieldset } from "@repo/ui/input";
 import { HomeHeader } from "../components/Header";
-import { SubmitButton } from "@repo/ui/button";
+import { HomeForm } from "../components/Forms";
 
 export default function HomePage() {
   return (
@@ -22,16 +21,7 @@ export default function HomePage() {
           <p className="text-center text-lg font-bold my-6">
             A partir de R$&nbsp;20,90. Cancele quando quiser.
           </p>
-          <form className="flex flex-col">
-            <h3 className="text-center mb-6">
-              Quer assistir? Informe seu email para criar ou reiniciar sua
-              assinatura.
-            </h3>
-            <div className="flex gap-2 flex-col md:flex-row">
-              <Fieldset label="Email" className="mb-0 bg-neutral-900/75" />
-              <SubmitButton text="Inscrever-se" className="mx-auto text-2xl" />
-            </div>
-          </form>
+          <HomeForm />
         </div>
         <NetflixBottomBorder />
       </div>

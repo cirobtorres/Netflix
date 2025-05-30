@@ -1,7 +1,7 @@
 import { cva, VariantProps } from "class-variance-authority";
 
 export const inputVariants = cva(
-  "w-full pt-6 px-4 pb-2 outline-hidden border-none placeholder:text-transparent peer",
+  "w-full pt-6 px-4 pb-2 outline-hidden border-none placeholder:text-transparent placeholder:text-sm placeholder:font-medium focus:placeholder:text-neutral-600 peer",
   {
     variants: {
       variant: {
@@ -33,7 +33,7 @@ export const labelVariants = cva(
 );
 
 export const fieldsetVariants = cva(
-  "relative w-full rounded border border-neutral-600 focus-within:outline-2 focus-within:outline-offset-2",
+  "relative w-full rounded border border-neutral-600 transition-outline duration-100 focus-within:outline-2 focus-within:outline-offset-2",
   {
     variants: {
       variant: {

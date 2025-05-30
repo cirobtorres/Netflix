@@ -11,8 +11,10 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/ui": "workspace:*",
     "@acme/utils": "workspace:*",
+    "@mercadopago/sdk-js": "^0.0.3",
+    "@mercadopago/sdk-react": "^1.0.3",
+    "@repo/ui": "workspace:*",
     "next": "^15.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

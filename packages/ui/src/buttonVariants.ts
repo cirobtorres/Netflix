@@ -5,7 +5,7 @@ export const submitButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-red-600 hover:bg-red-700",
+        default: "bg-red-600 hover:bg-red-700 disabled:bg-neutral-700",
         ghost: "bg-white/20 hover:bg-white/10",
       },
     },

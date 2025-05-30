@@ -40,7 +40,8 @@ export const ClientFeature = ({
                 ? "outline-outline-500"
                 : "outline-transparent",
               isRecommended === index &&
-                "relative before:-z-10 before:bg-neutral-800 before:border before:border-neutral-700 before:absolute before:inset-0 before:-top-8 before:rounded-[inherit] before:content-['Recomendado!'] before:leading-8"
+                "relative before:-z-10 before:bg-neutral-800 before:border before:border-neutral-700 before:absolute before:inset-0" +
+                  " before:-top-8 before:rounded-[inherit] before:content-['Recomendado!'] before:text-xs md:before:text-base before:leading-7"
             )}
           >
             <ColorfulBox
@@ -57,6 +58,9 @@ export const ClientFeature = ({
             </ColorfulBox>
           </button>
         ))}
+      </div>
+      <div className="text-xl mt-4 flex gap-1">
+        {plans[selectedIndex]?.plan}
       </div>
       <PriceBox
         price={plans[selectedIndex]?.price ?? ""}

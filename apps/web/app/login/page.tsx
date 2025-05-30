@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SubmitButton } from "@repo/ui/button";
 import { TextButton } from "@repo/ui/clientButtons";
 import { Checkbox } from "@repo/ui/checkbox";
-import { Fieldset } from "@repo/ui/input";
+import { Fieldset, Input, Label, PasswordFieldset } from "@repo/ui/input";
 import { LoginHeader } from "../../components/Header";
 
 // Se o usuário já tiver uma conta, essa conta já tiver sido identificada e o usuário acessar a page login
@@ -18,8 +18,11 @@ export default function LoginPage() {
         <div className="mb-3">
           <h1 className="text-4xl font-bold">Entrar</h1>
         </div>
-        <Fieldset label="Email" />
-        <Fieldset label="Senha" type="password" />
+        <Fieldset>
+          <Input />
+          <Label label="Email" />
+        </Fieldset>
+        <PasswordFieldset label="Senha" />
         <SubmitButton text="Entrar" className="w-full mb-3" />
         <div className="flex items-center">
           <hr className="w-full border-neutral-600" />
