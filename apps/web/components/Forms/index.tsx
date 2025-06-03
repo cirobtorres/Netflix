@@ -5,21 +5,26 @@ import { SubmitButton } from "@repo/ui/button";
 import { PlanSelectForm } from "../PlanSelect";
 import { loadMercadoPago } from "@mercadopago/sdk-js";
 import { CustomPaymentBrick } from "./CustomBrick";
+import { useActionState } from "react";
+import { signUp } from "../../services/authentications";
 
-export const HomeForm = () => (
-  <form className="flex flex-col">
-    <h3 className="text-center mb-6">
-      Quer assistir? Informe seu email para criar ou reiniciar sua assinatura.
-    </h3>
-    <div className="flex gap-2 flex-col md:flex-row">
-      <Fieldset className="mb-0 bg-neutral-900/75">
-        <Input placeholder="" />
-        <Label label="Email" />
-      </Fieldset>
-      <SubmitButton text="Inscrever-se" className="mx-auto text-2xl" />
-    </div>
-  </form>
-);
+export const HomeForm = () => {
+  const [_, action] = useActionState(signUp, { state: null });
+  return (
+    <form action={action} className="flex flex-col">
+      <h3 className="text-center mb-6">
+        Quer assistir? Informe seu email para criar ou reiniciar sua assinatura.
+      </h3>
+      <div className="flex gap-2 flex-col md:flex-row">
+        <Fieldset className="mb-0 bg-neutral-900/75">
+          <Input placeholder="" name="sign-up-email-input" />
+          <Label label="Email" />
+        </Fieldset>
+        <SubmitButton text="Inscrever-se" className="mx-auto text-2xl" />
+      </div>
+    </form>
+  );
+};
 
 export const Form1 = () => (
   <div className="max-w-[400px] flex-1 flex flex-col justify-start items-start mt-10 mb-20">

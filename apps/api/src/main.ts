@@ -1,5 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
+import { GlobalValidationPipe } from "./globalValidationPipe";
 
 console.log("DATABASE_URL", process.env.DATABASE_URL ? "ok" : undefined, "\n");
 console.log(
@@ -24,6 +25,11 @@ async function bootstrap() {
     },
   });
 
+  app.useGlobalPipes(new GlobalValidationPipe());
+
   await app.listen(process.env.PORT ?? 3001);
+
+  console.log(`Local: ${await app.getUrl()}`);
+  console.log("Global validation to DTOs with ValidationPipe");
 }
 bootstrap();

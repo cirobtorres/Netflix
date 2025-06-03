@@ -19,11 +19,13 @@ interface InputProps
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ uppercase, className, variant, ...props }, ref) => {
+  ({ name, uppercase, className, variant, ...props }, ref) => {
     const [text, setText] = React.useState("");
     return (
       <input
         ref={ref}
+        id={name}
+        name={name}
         value={text}
         placeholder=""
         onChange={(e) =>

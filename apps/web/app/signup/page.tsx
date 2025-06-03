@@ -5,7 +5,7 @@ export default function SignupPage() {
   return (
     <main className="overflow-y-auto min-h-screen flex flex-col justify-center items-center">
       <SignupHeader />
-      <Form4 />
+      <Form1 />
     </main>
   );
 }
