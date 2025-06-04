@@ -9,6 +9,14 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { StatusMessage } from "utils/enums/StatusMessage";
 import { returnMessage } from "utils/helpers/returnMessage";
 import { PutUserDto } from "./dto/put-user.dto";
+import * as bcrypt from "bcrypt";
+
+async function hashPassword(password: string | undefined) {
+  if (!password) return;
+  const salt = await bcrypt.genSalt();
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
+}
 
 @Injectable()
 export class UserService {
@@ -19,6 +27,7 @@ export class UserService {
       select: {
         id: true,
         email: true,
+        password: true,
         profiles: {
           select: {
             id: true,
@@ -34,7 +43,7 @@ export class UserService {
     return returnMessage({
       statusCode: 200,
       statusMessage: StatusMessage.OK,
-      message: {
+      data: {
         count,
         users,
       },
@@ -61,7 +70,7 @@ export class UserService {
           ok: false,
           statusCode: 404,
           statusMessage: StatusMessage.NOT_FOUND,
-          message: null,
+          data: null,
         }),
       );
     }
@@ -69,28 +78,32 @@ export class UserService {
     return returnMessage({
       statusCode: 200,
       statusMessage: StatusMessage.OK,
-      message: { user },
+      data: { user },
     });
   }
 
   // ----------------------------------------------------------------------
   async create(data: CreateUserDto) {
     try {
+      data.password = await hashPassword(data.password);
+
       const userCreated = await this.prisma.user.create({ data });
+
       return returnMessage({
         ok: true,
         statusCode: 201,
         statusMessage: StatusMessage.CREATED,
-        message: userCreated,
+        data: userCreated,
       });
     } catch (e) {
       if (e.code === "P2002") {
+        // "User e-mail is already in use"
         throw new ConflictException(
           returnMessage({
             ok: false,
             statusCode: 409,
             statusMessage: StatusMessage.CONFLICT,
-            message: "User e-mail is already in use",
+            data: null,
           }),
         );
       }
@@ -104,6 +117,8 @@ export class UserService {
   // ----------------------------------------------------------------------
   async patch(id: string, data: PatchUserDto) {
     try {
+      data.password = await hashPassword(data.password);
+
       const userUpdated = await this.prisma.user.update({
         where: { id },
         data,
@@ -112,7 +127,7 @@ export class UserService {
       return returnMessage({
         statusCode: 200,
         statusMessage: StatusMessage.OK,
-        message: { user: userUpdated },
+        data: { user: userUpdated },
       });
     } catch (e) {
       console.error(e);
@@ -121,7 +136,7 @@ export class UserService {
           ok: false,
           statusCode: 404,
           statusMessage: StatusMessage.NOT_FOUND,
-          message: null,
+          data: null,
         }),
       );
     }
@@ -130,6 +145,8 @@ export class UserService {
   // ----------------------------------------------------------------------
   async put(id: string, data: PutUserDto) {
     try {
+      data.password = await hashPassword(data.password);
+
       const userUpdated = await this.prisma.user.update({
         where: { id },
         data,
@@ -138,7 +155,7 @@ export class UserService {
       return returnMessage({
         statusCode: 200,
         statusMessage: StatusMessage.OK,
-        message: { user: userUpdated },
+        data: { user: userUpdated },
       });
     } catch (e) {
       console.error(e);
@@ -147,7 +164,7 @@ export class UserService {
           ok: false,
           statusCode: 404,
           statusMessage: StatusMessage.NOT_FOUND,
-          message: null,
+          data: null,
         }),
       );
     }
@@ -159,22 +176,22 @@ export class UserService {
     return returnMessage({
       statusCode: 200,
       statusMessage: StatusMessage.OK,
-      message: { user: userDeleted },
+      data: { user: userDeleted },
     });
   }
 
   // ----------------------------------------------------------------------
-  async deleteMany(ids: string[]) {
-    const usersDeleted = await this.prisma.user.deleteMany({
-      where: { id: { in: ids } },
-    });
-    const { count } = usersDeleted;
-    return returnMessage({
-      statusCode: 200,
-      statusMessage: StatusMessage.OK,
-      message: {
-        usersDeleted: count,
-      },
-    });
-  }
+  // async deleteMany(ids: string[]) {
+  //   const usersDeleted = await this.prisma.user.deleteMany({
+  //     where: { id: { in: ids } },
+  //   });
+  //   const { count } = usersDeleted;
+  //   return returnMessage({
+  //     statusCode: 200,
+  //     statusMessage: StatusMessage.OK,
+  //     message: {
+  //       usersDeleted: count,
+  //     },
+  //   });
+  // }
 }

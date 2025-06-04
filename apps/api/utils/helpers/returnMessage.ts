@@ -4,17 +4,17 @@ export function returnMessage({
   ok = true,
   statusCode,
   statusMessage,
-  message,
+  data,
 }: {
   ok?: boolean;
   statusCode: number;
   statusMessage: StatusMessage;
-  message: any;
+  data: any;
 }) {
   return {
     ok,
     statusCode,
     statusMessage,
-    message,
+    data,
   };
 }

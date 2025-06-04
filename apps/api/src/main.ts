@@ -1,13 +1,8 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { GlobalValidationPipe } from "./globalValidationPipe";
-
-console.log("DATABASE_URL", process.env.DATABASE_URL ? "ok" : undefined, "\n");
-console.log(
-  "MP_TEST_ACCESS_TOKEN",
-  process.env.MP_TEST_ACCESS_TOKEN ? "ok" : undefined,
-  "\n",
-);
+import { Logger } from "@nestjs/common";
+import { GlobalExceptionFilter } from "./globalExceptionFilter";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,9 +22,30 @@ async function bootstrap() {
 
   app.useGlobalPipes(new GlobalValidationPipe());
 
+  app.useGlobalFilters(new GlobalExceptionFilter());
+
   await app.listen(process.env.PORT ?? 3001);
 
+  process.env.DATABASE_URL
+    ? Logger.log("DATABASE_URL ok", "env")
+    : Logger.error("DATABASE_URL undefined");
+
+  process.env.JWT_SECRET_KEY
+    ? Logger.log("JWT_SECRET_KEY ok", "env")
+    : Logger.error("JWT_SECRET_KEY undefined");
+
+  process.env.MP_TEST_ACCESS_TOKEN
+    ? Logger.log("MP_TEST_ACCESS_TOKEN ok", "env")
+    : Logger.error("MP_TEST_ACCESS_TOKEN undefined");
+
+  process.env.MAILER_EMAIL &&
+  process.env.MAILER_HOST &&
+  process.env.MAILER_PORT &&
+  process.env.MAILER_USER &&
+  process.env.MAILER_PASS
+    ? Logger.log("MAILER ok", "env")
+    : Logger.error("MAILER undefined");
+
   console.log(`Local: ${await app.getUrl()}`);
-  console.log("Global validation to DTOs with ValidationPipe");
 }
 bootstrap();

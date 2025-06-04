@@ -7,5 +7,5 @@ export class PutUserDto {
 
   @IsString()
   @IsNotEmpty()
-  password: string;
+  password?: string;
 }
