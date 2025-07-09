@@ -80,6 +80,7 @@ const options = [
 const userEmail = "johndoe@email.com";
 
 export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
+  const [cardholderName, setCardholderName] = useState("");
   const [securityCode, setSecurityCode] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -214,6 +215,9 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
     };
   }, [publicKey, amount]);
 
+  const handleCardholderName = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setCardholderName(String(e.target.value).toLocaleUpperCase());
+
   return (
     <form id="form-checkout" className="mt-4 flex flex-col">
       {loading && (
@@ -265,7 +269,8 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
           id="form-checkout__cardholderName"
           type="text"
           placeholder="John Doe"
-          uppercase
+          value={cardholderName}
+          onChange={handleCardholderName}
         />
         <Label label="Titular" />
       </Fieldset>

@@ -2,19 +2,19 @@ import { StatusMessage } from "utils/enums/StatusMessage";
 
 export function returnMessage({
   ok = true,
-  statusCode,
-  statusMessage,
-  message,
+  statusCode = 200,
+  statusMessage = StatusMessage.OK,
+  data,
 }: {
   ok?: boolean;
-  statusCode: number;
-  statusMessage: StatusMessage;
-  message: any;
+  statusCode?: number;
+  statusMessage?: StatusMessage;
+  data: any;
 }) {
   return {
     ok,
     statusCode,
     statusMessage,
-    message,
+    data,
   };
 }

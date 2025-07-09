@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  rewrites: async () => {
+    return [
+      {
+        source: "/api/:path*", // ← qualquer chamada para /api
+        destination: "http://localhost:3001/api/:path*", // redireciona pro Nest
+      },
+    ];
+  },
 };
 
 export default nextConfig;
