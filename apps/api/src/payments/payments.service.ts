@@ -8,7 +8,8 @@ export class PaymentsService {
 
   async createPayment(body) {
     const client = new MercadoPagoConfig({
-      accessToken: process.env.MP_TEST_ACCESS_TOKEN ?? "NO-KEY",
+      // accessToken: process.env.MP_TEST_ACCESS_TOKEN ?? "NO-KEY",
+      accessToken: this.mp.get<string>("MP_TEST_ACCESS_TOKEN") ?? "NO-KEY",
       options: { timeout: 5000 },
     });
 

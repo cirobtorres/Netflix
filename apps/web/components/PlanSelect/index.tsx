@@ -1,6 +1,6 @@
 import { cn } from "@acme/utils/index";
-import { SubmitButton } from "@repo/ui/button";
-import { ClientFeature } from "./ClientFeature";
+import { MobilePlanSelect } from "./mobile";
+import { DesktopPlanSelect } from "./desktop";
 
 const recommendedIndex = 1;
 
@@ -11,6 +11,7 @@ interface FeatureProp {
 
 interface PlanProps {
   plan: React.ReactNode;
+  planType: "premium" | "standard" | "ads";
   className: string;
   price: string;
   features: FeatureProp[];
@@ -24,6 +25,7 @@ const plans: PlanProps[] = [
         <span>4K + HDR</span>
       </>
     ),
+    planType: "premium",
     price: "R$ 59,90",
     className: "from-red-500 to-pink-400 border-pink-300",
     features: [
@@ -65,6 +67,7 @@ const plans: PlanProps[] = [
       </>
     ),
     price: "R$ 44,90",
+    planType: "standard",
     className: "from-blue-500 to-purple-400 border-blue-300",
     features: [
       {
@@ -105,6 +108,7 @@ const plans: PlanProps[] = [
       </>
     ),
     price: "R$ 20,90",
+    planType: "ads",
     className: "from-emerald-500 to-cyan-500 border-emerald-300",
     features: [
       {
@@ -142,47 +146,13 @@ const plans: PlanProps[] = [
 export const PlanSelectForm = () => {
   return (
     <>
-      <form className="w-full hidden lg:flex lg:gap-2">
-        {plans.map((planObj, i) => (
-          <PlanCard
-            key={i}
-            fields={planObj}
-            isRecommended={i === recommendedIndex}
-          />
-        ))}
-      </form>
-      <form className="w-full hidden max-lg:flex max-lg:gap-2">
-        <ClientFeature plans={plans} isRecommended={recommendedIndex} />
-      </form>
+      <DesktopPlanSelect plans={plans} recommendedIndex={recommendedIndex} />
+      <MobilePlanSelect plans={plans} isRecommended={recommendedIndex} />
     </>
   );
 };
 
-const PlanCard = ({
-  fields,
-  isRecommended,
-}: {
-  fields: PlanProps;
-  isRecommended: boolean;
-}) => (
-  <div
-    className={cn(
-      "relative before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] mt-8",
-      isRecommended
-        ? "before:-m-[2px] rounded-b-xl before:content-['Recomendado!'] before:font-medium before:leading-9 before:text-center before:-top-8 before:rounded-t-xl before:bg-gradient-to-b before:from-neutral-800 before:to-5% before:to-neutral-700"
-        : "before:-m-[1px] rounded-xl before:bg-neutral-800",
-      "w-full flex flex-col bg-clip-padding bg-neutral-900"
-    )}
-  >
-    <div className="w-full flex flex-col items-center">
-      <ColorfulBox className={fields.className}>{fields.plan}</ColorfulBox>
-      <PriceBox price={fields.price} />
-      <ConfirmationButton isRecommended={isRecommended} />
-      <FeatureList fields={fields} />
-    </div>
-  </div>
-);
-
+// BELOW: utilities ----------------------------------------------------------------------------------------------------
 export const ColorfulBox = ({
   children,
   className,
@@ -213,37 +183,4 @@ export const PriceBox = ({
     <p className="text-3xl font-extrabold">{price}</p>
     <p className="text-neutral-500">Mensal</p>
   </div>
-);
-
-const ConfirmationButton = ({ isRecommended }: { isRecommended: boolean }) => (
-  <div className="px-4">
-    <SubmitButton
-      text="Próximo"
-      className={cn(
-        "text-xl",
-        isRecommended
-          ? "border border-red-400"
-          : "border border-neutral-700 text-red-500 bg-neutral-800 hover:bg-neutral-900"
-      )}
-    />
-  </div>
-);
-
-const FeatureList = ({
-  fields: { features },
-}: {
-  fields: { features: FeatureProp[] };
-}) => (
-  <ul className="w-full p-4">
-    {features.map((feature, i) => (
-      <Feature key={i} {...feature} />
-    ))}
-  </ul>
-);
-
-const Feature = ({ feature, text }: FeatureProp) => (
-  <li className="my-6 border-b border-neutral-800">
-    <p className="text-xs font-bold text-neutral-600 uppercase">{feature}</p>
-    <p className="">{text}</p>
-  </li>
 );

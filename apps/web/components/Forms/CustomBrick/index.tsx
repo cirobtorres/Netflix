@@ -80,6 +80,7 @@ const options = [
 const userEmail = "johndoe@email.com";
 
 export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
+  const [cardholderName, setCardholderName] = useState("");
   const [securityCode, setSecurityCode] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -156,6 +157,8 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
               identificationType,
             }: CardFormData = cardForm.getCardFormData();
 
+            const cleanup = cardForm.callbacks?.onFetching?.("payment");
+
             fetch("http://localhost:3001/api/payments/create", {
               method: "POST",
               headers: {
@@ -176,7 +179,13 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
                   },
                 },
               }),
-            });
+            })
+              .then((res) => res.json())
+              .then((data) => console.log("Payment Success:", data))
+              .catch((error) => console.error("Payment Error:", error))
+              .finally(() => {
+                if (cleanup) cleanup();
+              });
           },
           onFetching: (resource: string) => {
             console.log("Fetching resource: ", resource);
@@ -213,6 +222,9 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
       }
     };
   }, [publicKey, amount]);
+
+  const handleCardholderName = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setCardholderName(String(e.target.value).toLocaleUpperCase());
 
   return (
     <form id="form-checkout" className="mt-4 flex flex-col">
@@ -265,7 +277,8 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
           id="form-checkout__cardholderName"
           type="text"
           placeholder="John Doe"
-          uppercase
+          value={cardholderName}
+          onChange={handleCardholderName}
         />
         <Label label="Titular" />
       </Fieldset>
