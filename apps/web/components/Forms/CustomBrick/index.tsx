@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { SubmitButton } from "@repo/ui/button";
 import {
@@ -11,11 +13,12 @@ import {
   SecurityCodeInput,
 } from "@repo/ui/input";
 import { PaymentMethodRadio } from "../../Inputs";
-import { cn, getValidationClass } from "@acme/utils/index";
+import { cn } from "@acme/utils/index";
 
 type PaymentProps = {
   publicKey: string;
   amount: string;
+  plan: string;
 };
 
 interface CardFormCallbacks {
@@ -79,9 +82,11 @@ const options = [
 
 const userEmail = "johndoe@email.com";
 
-export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
+export const CreditCardBrick = ({ publicKey, amount, plan }: PaymentProps) => {
+  const [cardholderName, setCardholderName] = useState("");
   const [securityCode, setSecurityCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const initializeBrick = async () => {
@@ -156,6 +161,8 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
               identificationType,
             }: CardFormData = cardForm.getCardFormData();
 
+            const cleanup = cardForm.callbacks?.onFetching?.("payment");
+
             fetch("http://localhost:3001/api/payments/create", {
               method: "POST",
               headers: {
@@ -176,7 +183,16 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
                   },
                 },
               }),
-            });
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                console.log("Payment Success:", data);
+                router.push("/");
+              })
+              .catch((error) => console.error("Payment Error:", error))
+              .finally(() => {
+                if (cleanup) cleanup();
+              });
           },
           onFetching: (resource: string) => {
             console.log("Fetching resource: ", resource);
@@ -192,7 +208,6 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
           },
           onError: (error: unknown) => {
             console.error(error);
-
             setLoading(() => {
               document.body.style.overflow = "";
               return false;
@@ -213,6 +228,9 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
       }
     };
   }, [publicKey, amount]);
+
+  const handleCardholderName = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setCardholderName(String(e.target.value).toLocaleUpperCase());
 
   return (
     <form id="form-checkout" className="mt-4 flex flex-col">
@@ -265,7 +283,8 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
           id="form-checkout__cardholderName"
           type="text"
           placeholder="John Doe"
-          uppercase
+          value={cardholderName}
+          onChange={handleCardholderName}
         />
         <Label label="Titular" />
       </Fieldset>
@@ -324,10 +343,13 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
         <PaymentMethodRadio name="paymentMethod" options={options} />
       </div>
       <div className="flex justify-between rounded p-4 bg-neutral-900">
-        <p className="text-neutral-500">R$ 44,90/mês</p>
-        <button className="cursor-pointer font-medium rounded transition-all duration-100 text-blue-500 hover:text-blue-400 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2">
+        <p className="text-neutral-500">R$ {plan}/mês</p>
+        <Link
+          href="/signup/planform"
+          className="cursor-pointer font-medium rounded transition-all duration-100 text-blue-500 hover:text-blue-400 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+        >
           Trocar
-        </button>
+        </Link>
       </div>
       <p className="text-neutral-500 my-4">
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Earum atque
@@ -345,6 +367,10 @@ export const CustomPaymentBrick = ({ publicKey, amount }: PaymentProps) => {
       </progress> */}
     </form>
   );
+};
+
+export const PixBrick = ({ publicKey, amount, plan }: PaymentProps) => {
+  return <form></form>;
 };
 
 const ErrorMessage = ({ message }: { message: string }) => (

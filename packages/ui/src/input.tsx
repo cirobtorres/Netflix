@@ -14,23 +14,58 @@ import { InputMask } from "@react-input/mask";
 
 interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement>,
-    InputVariantsProps {
-  uppercase?: boolean;
+    InputVariantsProps {}
+
+interface EmailInput
+  extends React.InputHTMLAttributes<HTMLInputElement>,
+    InputVariantsProps {}
+
+interface LabelComponentProps
+  extends React.LabelHTMLAttributes<HTMLLabelElement>,
+    LabelVariantsProps {
+  label: string;
 }
 
+interface FieldsetComponentProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    FieldsetVariantsProps {
+  children: React.ReactNode;
+}
+
+type ControlledProps = {
+  value: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+};
+
+type UncontrolledProps = {
+  value?: undefined;
+  onChange?: undefined;
+};
+
+// PasswordFieldsetComponentProps admits controlled input state or non controlled input state.
+type PasswordFieldsetComponentProps = (ControlledProps | UncontrolledProps) &
+  Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> &
+  FieldsetVariantsProps & {
+    label: string;
+    maxLength?: number;
+    setFocus?: boolean;
+  };
+
+// ------------------------------------------------------------------------------------------
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ name, uppercase, className, variant, ...props }, ref) => {
-    const [text, setText] = React.useState("");
+  (
+    { name, value, onChange, defaultValue, className, variant, ...props },
+    ref
+  ) => {
     return (
       <input
         ref={ref}
         id={name}
         name={name}
-        value={text}
+        value={value}
         placeholder=""
-        onChange={(e) =>
-          setText(uppercase ? e.target.value.toUpperCase() : e.target.value)
-        }
+        onChange={onChange}
+        defaultValue={defaultValue}
         className={cn(inputVariants({ variant }), className)}
         {...props}
       />
@@ -39,12 +74,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = "Input";
 
-interface LabelComponentProps
-  extends React.LabelHTMLAttributes<HTMLLabelElement>,
-    LabelVariantsProps {
-  label: string;
-}
-
+// ------------------------------------------------------------------------------------------
 export const Label = ({
   label,
   className,
@@ -56,15 +86,12 @@ export const Label = ({
   </label>
 );
 
-interface PasswordFieldsetComponentProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    FieldsetVariantsProps {
-  label: string;
-  maxLength?: number;
-}
-
+// ------------------------------------------------------------------------------------------
 export const PasswordFieldset = ({
   label,
+  value,
+  onChange,
+  setFocus,
   maxLength,
   className,
   variant,
@@ -74,6 +101,13 @@ export const PasswordFieldset = ({
   const [passHover, setPassHover] = React.useState(false);
   const [released, setReleased] = React.useState(true);
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (setFocus) {
+      inputRef.current?.focus();
+    }
+  });
+
   return (
     <div
       className={cn(fieldsetVariants({ variant }), className)}
@@ -92,6 +126,8 @@ export const PasswordFieldset = ({
       <Input
         ref={inputRef}
         type={dynType}
+        value={value}
+        onChange={onChange}
         maxLength={maxLength}
         autoComplete="email"
         className="pl-4 pr-14"
@@ -168,11 +204,24 @@ export const PasswordFieldset = ({
   );
 };
 
-interface FieldsetComponentProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    FieldsetVariantsProps {
-  children: React.ReactNode;
-}
+// ------------------------------------------------------------------------------------------
+export const EmailInput = React.forwardRef<HTMLInputElement, EmailInput>(
+  ({ name, value, onChange, className, variant, ...props }, ref) => {
+    return (
+      <input
+        ref={ref}
+        id={name}
+        name={name}
+        value={value}
+        placeholder=""
+        onChange={onChange}
+        className={cn(inputVariants({ variant }), className)}
+        {...props}
+      />
+    );
+  }
+);
+EmailInput.displayName = "EmailInput";
 
 // ------------------------------------------------------------------------------------------
 export const Fieldset = ({
