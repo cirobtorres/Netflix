@@ -14,6 +14,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { PatchUserDto } from "./dto/patch-user.dto";
 import { PutUserDto } from "./dto/put-user.dto";
 
+// TODO: proteger essas rotas de acesso direto
 @Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -50,10 +51,10 @@ export class UserController {
     return this.userService.put(id, data);
   }
 
-  @Delete("delete/many")
-  async deleteMany(@Body() { id }: { id: string[] }) {
-    return this.userService.deleteMany(id);
-  }
+  // @Delete("delete/many")
+  // async deleteMany(@Body() { id }: { id: string[] }) {
+  //   return this.userService.deleteMany(id);
+  // }
 
   // The route "delete/:id" is more specific, thus it must comes AFTER delete/many
   @Delete("delete/:id")

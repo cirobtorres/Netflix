@@ -23,6 +23,32 @@ export class PaymentsController {
       };
     },
   ) {
-    return this.paymentsService.createPayment(body);
+    return this.paymentsService.createCreditCardPayment(body);
+  }
+
+  @Post("pix")
+  createPaymentPix(
+    @Body()
+    body: {
+      transaction_amount: number;
+      description: string;
+      email: string;
+      first_name: string;
+      last_name: string;
+      identification: {
+        type: string; // "CPF"
+        number: string;
+      };
+      address: {
+        zip_code: string;
+        street_name: string;
+        street_number: string;
+        neighborhood: string;
+        city: string;
+        federal_unit: string;
+      };
+    },
+  ) {
+    return this.paymentsService.createPixPayment(body);
   }
 }

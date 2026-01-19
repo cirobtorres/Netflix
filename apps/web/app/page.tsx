@@ -1,7 +1,9 @@
 import { HomeHeader } from "../components/Header";
 import { HomeForm } from "../components/Forms";
+// import { cookies } from "next/headers";
 
-export default function HomePage() {
+export default async function HomePage() {
+  // const token = (await cookies()).get("token");
   return (
     <main className="min-h-screen overflow-y-hidden flex flex-col items-center">
       <div
@@ -21,6 +23,7 @@ export default function HomePage() {
           <p className="text-center text-lg font-bold my-6">
             A partir de R$&nbsp;20,90. Cancele quando quiser.
           </p>
+          {/* <HomeForm token={token} /> */}
           <HomeForm />
         </div>
         <NetflixBottomBorder />

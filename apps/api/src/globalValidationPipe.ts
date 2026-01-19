@@ -30,7 +30,7 @@ export class GlobalValidationPipe extends ValidationPipe {
             ok: false,
             statusCode: 400,
             statusMessage: StatusMessage.BAD_REQUEST,
-            message: messages,
+            data: null,
           }),
         );
       },

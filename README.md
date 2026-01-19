@@ -40,3 +40,15 @@
   data: object | null
 }
 ```
+
+## Se node_modules de API for excluído, o Prisma precisa ser reconfigurado.
+
+- ### Excluir todos os node_modules e pnpm-lock.yaml
+
+- ### Comentar "output" em schema.prisma
+
+- ### pnpm i
+
+- ### Descomentar "output" em schema.prisma
+
+- ### Em apps/api: npx prisma generate
